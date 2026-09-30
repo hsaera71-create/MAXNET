@@ -1748,9 +1748,10 @@ function shell(
           ${currentUser ? `
 
             <button
-              class="icon-btn"
+              class="icon-btn max-notification-btn"
               onclick="openNotifications()">
               ${icon("heart")}
+              <span id="maxNotificationBadge" class="max-unread-dot hidden"></span>
             </button>
 
             <button
@@ -5509,6 +5510,389 @@ async function init(){
 }
 
 init();
+</script>
+
+
+<style id="maxnet-enhancements">
+/* =========================================================
+   MAXNET ADDITIVE ENHANCEMENTS
+   Existing code is preserved; these styles extend it.
+========================================================= */
+.bottom.maxnet-six{grid-template-columns:repeat(6,1fr)}
+.max-more{margin-left:auto;width:38px;height:38px;border-radius:10px;background:transparent;display:flex;align-items:center;justify-content:center}
+.max-more:active{background:#151d27}
+.post-head .max-follow{margin-left:auto;margin-right:2px}
+.max-follow{border:1px solid #2a3a50;background:#111923;color:#fff;border-radius:10px;padding:7px 10px;font-size:11px;font-weight:800}
+.max-follow.following{color:#9aa8b8}
+.max-media{position:relative;overflow:hidden;background:#05080c}
+.max-media-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.max-media-track::-webkit-scrollbar{display:none}
+.max-media-slide{min-width:100%;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;background:#05080c;position:relative}
+.max-media-slide img,.max-media-slide video{width:100%;max-height:680px;object-fit:contain;display:block}
+.max-media-count{position:absolute;right:12px;top:12px;background:rgba(0,0,0,.65);padding:5px 8px;border-radius:99px;font-size:11px;z-index:3}
+.max-media-dots{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);display:flex;gap:4px;z-index:3}
+.max-media-dot{width:5px;height:5px;border-radius:50%;background:#fff;opacity:.45}.max-media-dot.active{opacity:1;background:#1264ff}
+.max-post-menu,.max-share-sheet,.max-modal{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.62);display:flex;align-items:flex-end;justify-content:center}
+.max-sheet{width:100%;max-width:720px;background:#0f151e;border:1px solid #263241;border-bottom:0;border-radius:22px 22px 0 0;padding:10px 14px 18px;box-shadow:0 -20px 60px rgba(0,0,0,.45)}
+.max-sheet-grip{width:38px;height:4px;border-radius:99px;background:#344354;margin:3px auto 12px}
+.max-sheet button{width:100%;min-height:48px;background:transparent;text-align:left;border-radius:12px;padding:0 13px;display:flex;align-items:center;gap:12px;font-weight:700}
+.max-sheet button:active{background:#182230}.max-sheet button.danger{color:#ff6672}
+.max-sheet svg{width:20px;height:20px;flex:none}
+.max-edit-caption{min-height:130px;margin:10px 0}
+.max-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.max-tag{background:#172230;border:1px solid #27384c;padding:6px 9px;border-radius:99px;font-size:12px}
+.max-profile-tabs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:15px}
+.max-profile-tabs button{height:45px;background:transparent;color:#718093}.max-profile-tabs button.active{color:#fff;border-bottom:2px solid #1264ff}
+.max-reels{height:calc(100vh - 62px - 70px);overflow-y:auto;scroll-snap-type:y mandatory;background:#000}
+.max-reel{height:100%;min-height:100%;position:relative;scroll-snap-align:start;background:#000;overflow:hidden}
+.max-reel video{width:100%;height:100%;object-fit:cover}
+.max-reel-shade{position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(0,0,0,.8));pointer-events:none}
+.max-reel-info{position:absolute;left:15px;right:85px;bottom:25px;z-index:4}.max-reel-user{display:flex;align-items:center;gap:8px;margin-bottom:8px}.max-reel-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover}.max-reel-name{font-weight:900}.max-reel-actions{position:absolute;right:10px;bottom:28px;z-index:5;display:flex;flex-direction:column;gap:10px}.max-reel-action{width:48px;height:48px;border-radius:50%;background:rgba(10,14,20,.58);display:flex;align-items:center;justify-content:center}.max-reel-action svg{width:23px;height:23px}.max-reel-action span{position:absolute;margin-top:56px;font-size:10px}.max-chat-nav-badge{position:absolute;margin: -26px 0 0 15px;background:#1264ff;color:#fff;border-radius:99px;min-width:16px;height:16px;font-size:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.max-story-tools{position:absolute;right:12px;bottom:75px;z-index:8;display:flex;gap:8px}.max-story-tool{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center}.max-story-tool svg{width:20px;height:20px}
+.max-story-viewers{max-height:55vh;overflow:auto}
+.max-crop{display:flex;gap:8px;overflow-x:auto;padding:8px 0}.max-crop-item{flex:0 0 88px;height:110px;border:1px solid #263241;border-radius:12px;overflow:hidden;position:relative}.max-crop-item img,.max-crop-item video{width:100%;height:100%;object-fit:cover}.max-crop-item button{position:absolute;right:4px;top:4px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.65)}
+.max-send-direct{margin:0 16px 12px;width:calc(100% - 32px);min-height:42px;border-radius:12px;background:#1264ff;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px}.max-send-direct svg{width:18px;height:18px}
+.max-location-row,.max-option-row{display:flex;gap:8px;align-items:center;margin:8px 0}.max-option-row label{font-size:13px;color:#dce2e9}
+.max-empty-state{padding:28px 16px;text-align:center;color:#8995a5}
+
+.max-notification-btn,.max-chat-nav{position:relative}
+.max-nav-icon-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:24px;height:24px}
+.max-unread-dot{position:absolute;width:8px;height:8px;border-radius:50%;background:#ff3040;box-shadow:0 0 0 2px #080c12;right:1px;top:0;z-index:5}
+.max-notification-btn .max-unread-dot{right:7px;top:7px}
+.max-chat-nav .max-unread-dot{right:-1px;top:-1px}
+.max-reel-action.liked{color:#ff3040}
+.max-reel-action.liked svg{stroke:#ff3040}
+</style>
+
+<script id="maxnet-enhancements-script">
+(function(){
+  "use strict";
+
+  const MAX = {
+    icons:{
+      more:'<svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg>',
+      share:'<svg class="icon" viewBox="0 0 24 24"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 12v7h14v-7"/></svg>',
+      link:'<svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.2 1.2"/><path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.2-1.2"/></svg>',
+      trash:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="m7 7 1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg>',
+      archive:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16v13H4z"/><path d="M3 4h18v3H3z"/><path d="M9 12h6"/></svg>',
+      users:'<svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.5a3 3 0 0 1 0 5.8M18 14c2 .8 3 2.4 3 5"/></svg>',
+      location:'<svg class="icon" viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+      music:'<svg class="icon" viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>',
+      message:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 4z"/></svg>',
+      edit:'<svg class="icon" viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10z"/><path d="m13 7 4 4"/></svg>'
+    }
+  };
+
+  function esc2(v){return typeof esc==='function'?esc(v):String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+  function icon2(n){return (typeof icon==='function'&&icon(n))||MAX.icons[n]||''}
+  function isMine(p){return !!currentUser&&p&&p.user_id===currentUser.id}
+  function profileName(p){return p?.display_name||p?.username||'Пользователь'}
+
+  /* ---------- SVG icons ---------- */
+  window.maxnetExtraIcon=function(n){return icon2(n)};
+
+  /* ---------- Multi-media renderer ---------- */
+  window.maxRenderPostMedia=function(post){
+    const media=(post.post_media||[]).slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+    if(!media.length)return '';
+    if(media.length===1){
+      const m=media[0];
+      return `<div class="max-media"><div class="max-media-track">${m.media_type==='video'?`<div class="max-media-slide"><video src="${esc2(m.media_url)}" controls playsinline preload="metadata"></video></div>`:`<div class="max-media-slide"><img src="${esc2(m.media_url)}" loading="lazy"></div>`}</div></div>`;
+    }
+    return `<div class="max-media"><div class="max-media-track" onscroll="maxMediaScroll(this)">${media.map(m=>`<div class="max-media-slide">${m.media_type==='video'?`<video src="${esc2(m.media_url)}" controls playsinline preload="metadata"></video>`:`<img src="${esc2(m.media_url)}" loading="lazy">`}</div>`).join('')}</div><div class="max-media-count">1/${media.length}</div><div class="max-media-dots">${media.map((_,i)=>`<i class="max-media-dot ${i===0?'active':''}"></i>`).join('')}</div></div>`;
+  };
+  window.maxMediaScroll=function(track){
+    const wrap=track.parentElement; const slides=track.children.length||1; const i=Math.round(track.scrollLeft/(track.clientWidth||1));
+    const count=wrap.querySelector('.max-media-count'); if(count)count.textContent=(i+1)+'/'+slides;
+    wrap.querySelectorAll('.max-media-dot').forEach((d,n)=>d.classList.toggle('active',n===i));
+  };
+
+  /* ---------- Post actions ---------- */
+  window.maxPostLink=function(id){return location.href.split('#')[0]+'#post-'+encodeURIComponent(id)};
+  window.maxCopyPostLink=async function(id){try{await navigator.clipboard.writeText(maxPostLink(id));toast('Ссылка скопирована')}catch{toast(maxPostLink(id))}};
+  window.maxNativeShare=async function(id){const url=maxPostLink(id);try{if(navigator.share)await navigator.share({title:'MAXNET',text:'Публикация в MAXNET',url});else await navigator.clipboard.writeText(url);toast(navigator.share?'':'Ссылка скопирована')}catch{}}
+
+  window.maxCloseSheet=function(){document.querySelectorAll('.max-post-menu,.max-share-sheet,.max-modal').forEach(x=>x.remove())};
+
+  window.maxOpenShare=function(id){
+    maxCloseSheet();
+    const el=document.createElement('div');el.className='max-share-sheet';
+    el.innerHTML=`<div class="max-sheet"><div class="max-sheet-grip"></div><button onclick="maxSendPost('${id}')">${icon2('send')}<span>Отправить в MAXNET</span></button><button onclick="maxCopyPostLink('${id}');maxCloseSheet()">${MAX.icons.link}<span>Копировать ссылку</span></button><button onclick="maxNativeShare('${id}');maxCloseSheet()">${MAX.icons.share}<span>Поделиться через телефон</span></button><button onclick="maxCloseSheet()"><span>Закрыть</span></button></div>`;
+    el.onclick=e=>{if(e.target===el)maxCloseSheet()};document.body.appendChild(el);
+  };
+
+  window.maxOpenPostMenu=async function(id){
+    maxCloseSheet();
+    const post=await maxGetPost(id); if(!post)return;
+    const mine=isMine(post);
+    const el=document.createElement('div');el.className='max-post-menu';
+    el.innerHTML=`<div class="max-sheet"><div class="max-sheet-grip"></div>${mine?`<button onclick="maxEditPost('${id}')">${MAX.icons.edit}<span>Редактировать публикацию</span></button><button onclick="maxArchivePost('${id}')">${MAX.icons.archive}<span>В архив</span></button><button class="danger" onclick="maxDeletePost('${id}')">${MAX.icons.trash}<span>Удалить</span></button>`:''}<button onclick="maxOpenShare('${id}')">${MAX.icons.share}<span>Поделиться</span></button><button onclick="maxCopyPostLink('${id}');maxCloseSheet()">${MAX.icons.link}<span>Копировать ссылку</span></button><button onclick="maxSendPost('${id}')">${icon2('send')}<span>Отправить в личные сообщения</span></button><button onclick="maxCloseSheet()"><span>Закрыть</span></button></div>`;
+    el.onclick=e=>{if(e.target===el)maxCloseSheet()};document.body.appendChild(el);
+  };
+
+  async function maxGetPost(id){
+    const {data,error}=await db.from('posts').select(`*,profiles:user_id(id,username,display_name,avatar_url,is_verified),post_media(id,media_url,media_type,sort_order)`).eq('id',id).maybeSingle();
+    if(error){console.error(error);toast('Не удалось загрузить публикацию');return null} return data;
+  }
+
+  window.maxDeletePost=async function(id){
+    if(!confirm('Удалить публикацию?'))return;
+    const {error}=await db.from('posts').delete().eq('id',id).eq('user_id',currentUser.id);
+    if(error){console.error(error);toast('Не удалось удалить публикацию');return}
+    maxCloseSheet();toast('Публикация удалена');if(typeof loadFeed==='function')await loadFeed();
+  };
+
+  window.maxArchivePost=function(id){
+    const key='maxnet_archived_posts';const a=JSON.parse(localStorage.getItem(key)||'[]');if(!a.includes(id))a.push(id);localStorage.setItem(key,JSON.stringify(a));maxCloseSheet();document.getElementById('post-'+id)?.remove();toast('Публикация скрыта в архиве на этом устройстве');
+  };
+
+  window.maxEditPost=async function(id){
+    const p=await maxGetPost(id);if(!p)return;maxCloseSheet();
+    const el=document.createElement('div');el.className='max-modal';el.innerHTML=`<div class="max-sheet"><div class="max-sheet-grip"></div><div style="font-size:18px;font-weight:900">Редактировать публикацию</div><textarea id="maxEditCaption" class="textarea max-edit-caption">${esc2(p.caption||'')}</textarea><button class="btn primary full" onclick="maxSaveEditPost('${id}')">Сохранить</button><div style="height:8px"></div><button onclick="maxCloseSheet()">Отмена</button></div>`;el.onclick=e=>{if(e.target===el)maxCloseSheet()};document.body.appendChild(el);
+  };
+  window.maxSaveEditPost=async function(id){const caption=document.getElementById('maxEditCaption')?.value.trim()||'';const {error}=await db.from('posts').update({caption}).eq('id',id).eq('user_id',currentUser.id);if(error){console.error(error);toast('Ошибка изменения');return}maxCloseSheet();toast('Публикация изменена');if(currentPage==='home')loadFeed()};
+
+  /* ---------- Direct send ---------- */
+  window.maxSendPost=async function(postId){
+    maxCloseSheet();
+    if(typeof showChats==='function'){
+      currentPage='chats';
+      await showChats();
+      setTimeout(()=>maxOpenSendPicker(postId),100);
+    }
+  };
+  window.maxOpenSendPicker=function(postId){
+    const el=document.createElement('div');el.className='max-modal';el.innerHTML=`<div class="max-sheet"><div class="max-sheet-grip"></div><div style="font-size:18px;font-weight:900">Отправить публикацию</div><input id="maxSendSearch" class="input" placeholder="Поиск @username" oninput="maxSearchSendUsers(this.value,'${postId}')"><div id="maxSendUsers" style="margin-top:10px;max-height:45vh;overflow:auto"><div class="max-empty-state">Начни вводить username</div></div><button onclick="maxCloseSheet()">Отмена</button></div>`;el.onclick=e=>{if(e.target===el)maxCloseSheet()};document.body.appendChild(el)};
+  let sendTimer;
+  window.maxSearchSendUsers=function(q,postId){clearTimeout(sendTimer);sendTimer=setTimeout(async()=>{const box=document.getElementById('maxSendUsers');if(!box)return;if(!q.trim()){box.innerHTML='<div class="max-empty-state">Начни вводить username</div>';return}const {data}=await db.from('profiles').select('id,username,display_name,avatar_url,is_verified').ilike('username','%'+q.replace(/^@/,'')+'%').limit(20);box.innerHTML=(data||[]).filter(x=>x.id!==currentUser.id).map(u=>`<button class="user-row" style="width:100%;background:transparent;text-align:left" onclick="maxSendToUser('${postId}','${u.id}')"><img class="user-row-avatar" src="${esc2(getAvatar(u))}"><span class="user-row-main"><b>@${esc2(u.username)}</b><small class="muted" style="display:block">${esc2(profileName(u))}</small></span></button>`).join('')||'<div class="max-empty-state">Пользователь не найден</div>'},250)};
+  window.maxSendToUser=async function(postId,userId){
+    try{
+      const {data:chat,error}=await db.rpc('create_direct_chat',{target_user:userId});
+      if(error)throw error;
+      const chatId=chat?.id||chat?.chat_id||chat;
+      if(!chatId)throw new Error('Не получен chat id');
+      const {error:me}=await db.from('messages').insert({chat_id:chatId,sender_id:currentUser.id,content:'[MAXNET_POST:'+postId+']'});
+      if(me)throw me;maxCloseSheet();toast('Публикация отправлена');
+    }catch(e){console.error(e);toast('Не удалось отправить публикацию')}
+  };
+
+  /* ---------- Coauthor UI ---------- */
+  window.maxCoauthorPicker=function(postId){
+    const el=document.createElement('div');el.className='max-modal';el.innerHTML=`<div class="max-sheet"><div class="max-sheet-grip"></div><div style="font-size:18px;font-weight:900">Добавить соавторов</div><div class="muted small" style="margin:5px 0 12px">Поиск @username → отправить приглашение</div><input id="maxCoSearch" class="input" placeholder="@username" oninput="maxSearchCoauthors(this.value,'${postId}')"><div id="maxCoUsers" style="max-height:45vh;overflow:auto"></div><button onclick="maxCloseSheet()">Готово</button></div>`;el.onclick=e=>{if(e.target===el)maxCloseSheet()};document.body.appendChild(el)};
+  let coTimer;window.maxSearchCoauthors=function(q,postId){clearTimeout(coTimer);coTimer=setTimeout(async()=>{const box=document.getElementById('maxCoUsers');if(!box)return;const term=q.trim().replace(/^@/,'');if(!term){box.innerHTML='';return}const {data}=await db.from('profiles').select('id,username,display_name,avatar_url,is_verified').ilike('username','%'+term+'%').limit(20);box.innerHTML=(data||[]).filter(u=>u.id!==currentUser.id).map(u=>`<button class="user-row" style="width:100%;background:transparent;text-align:left" onclick="maxInviteCoauthor('${postId}','${u.id}')"><img class="user-row-avatar" src="${esc2(getAvatar(u))}"><span class="user-row-main"><b>@${esc2(u.username)}</b><small class="muted" style="display:block">${esc2(profileName(u))}</small></span></button>`).join('')||'<div class="max-empty-state">Не найдено</div>'},250)};
+  window.maxInviteCoauthor=async function(postId,userId){
+    try{const {error}=await db.from('notifications').insert({user_id:userId,actor_id:currentUser.id,type:'coauthor_invite',post_id:postId});if(error)throw error;toast('Приглашение отправлено')}catch(e){console.error(e);toast('Не удалось отправить приглашение')}
+  };
+
+  /* ---------- Replace feed renderer additively ---------- */
+  const originalRenderPost=window.renderPost;
+  window.renderPost=function(post){
+    const profile=post.profiles||{};const media=(post.post_media||[]).slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));if(!media.length)return '';
+    const archived=JSON.parse(localStorage.getItem('maxnet_archived_posts')||'[]');if(archived.includes(String(post.id)))return '';
+    const mediaHtml=maxRenderPostMedia(post);
+    return `<article class="post" id="post-${esc2(post.id)}"><div class="post-head"><img class="post-avatar" src="${esc2(getAvatar(profile))}" onclick="showProfile('${post.user_id}')"><div class="post-user" onclick="showProfile('${post.user_id}')"><div class="post-username verified-name">${esc2(profileName(profile))}${verifiedBadge(profile)}</div><div class="post-time">@${esc2(profile.username||'')} · ${timeAgo(post.created_at)}</div></div>${!isMine(post)?`<button class="max-follow" onclick="maxQuickFollow('${post.user_id}',this)">Подписаться</button>`:''}<button class="max-more" onclick="maxOpenPostMenu('${post.id}')">${MAX.icons.more}</button></div>${mediaHtml}<div class="post-actions"><button class="action" onclick="toggleLike('${post.id}',this)">${icon2('heart')}</button><button class="action" onclick="openComments('${post.id}')">${icon2('comment')}</button><button class="action" onclick="maxOpenShare('${post.id}')">${icon2('send')}</button><button class="action" onclick="toggleSave('${post.id}',this)">${icon2('bookmark')}</button></div><button class="max-send-direct" onclick="maxSendPost('${post.id}')">${icon2('send')}Отправить</button><div class="post-info"><div class="likes">${Number(post.likes_count||0)} отметок нравится</div>${post.caption?`<div class="caption"><b>@${esc2(profile.username||'')}</b> ${esc2(post.caption)}</div>`:''}${Number(post.comments_count||0)>0?`<div class="comments-link" onclick="openComments('${post.id}')">Посмотреть комментарии (${post.comments_count})</div>`:''}</div></article>`;
+  };
+
+  window.maxQuickFollow=async function(uid,btn){try{const {data}=await db.from('followers').select('follower_id').eq('follower_id',currentUser.id).eq('following_id',uid).maybeSingle();if(data){await db.from('followers').delete().eq('follower_id',currentUser.id).eq('following_id',uid);btn.textContent='Подписаться';btn.classList.remove('following')}else{await db.from('followers').insert({follower_id:currentUser.id,following_id:uid});btn.textContent='Подписки';btn.classList.add('following')}}catch(e){console.error(e);toast('Ошибка подписки')}};
+
+  /* ---------- Bottom nav with Chats ---------- */
+  const oldBottomNav=window.bottomNav;
+  window.bottomNav=function(){
+    const base=oldBottomNav?oldBottomNav():'';
+    if(!currentUser)return base;
+    const marker='</nav>';if(!base.includes(marker))return base;
+    const extra=`<button class="nav-btn max-chat-nav" onclick="showChats()"><span class="max-nav-icon-wrap">${icon2('message')}<span id="maxChatBadge" class="max-unread-dot hidden"></span></span><span>Чаты</span></button>`;
+    return base.replace(marker,extra+marker).replace('class="bottom"','class="bottom maxnet-six"');
+  };
+
+  /* ---------- Reels ---------- */
+  window.showReels=async function(){
+    currentPage='reels';
+    app.innerHTML=shell(`<div class="max-reels" id="maxReels"><div class="loading">Загрузка Reels...</div></div>`);
+    const {data,error}=await db.from('posts').select(`*,profiles:user_id(id,username,display_name,avatar_url,is_verified),post_media(id,media_url,media_type,sort_order)`).order('created_at',{ascending:false}).limit(80);
+    if(error){console.error(error);$('maxReels').innerHTML='<div class="empty">Не удалось загрузить Reels</div>';return}
+    const rows=[];(data||[]).forEach(p=>(p.post_media||[]).filter(m=>m.media_type==='video').forEach(m=>rows.push({p,m})));if(!rows.length){$('maxReels').innerHTML='<div class="empty">Пока нет Reels</div>';return}
+    $('maxReels').innerHTML=rows.map(({p,m})=>{const pr=p.profiles||{};return `<section class="max-reel"><video src="${esc2(m.media_url)}" playsinline loop preload="metadata" onclick="this.paused?this.play():this.pause()"></video><div class="max-reel-shade"></div><div class="max-reel-info"><div class="max-reel-user"><img class="max-reel-avatar" src="${esc2(getAvatar(pr))}" onclick="showProfile('${p.user_id}')"><span class="max-reel-name">@${esc2(pr.username||'')}</span>${verifiedBadge(pr)}${p.user_id!==currentUser.id?`<button class="max-follow" onclick="maxQuickFollow('${p.user_id}',this)">Подписаться</button>`:''}</div><div>${esc2(p.caption||'')}</div><div class="muted small" style="margin-top:7px">${MAX.icons.music} MAXNET audio</div></div><div class="max-reel-actions"><button class="max-reel-action" onclick="toggleLike('${p.id}',this)">${icon2('heart')}</button><button class="max-reel-action" onclick="openComments('${p.id}')">${icon2('comment')}</button><button class="max-reel-action" onclick="maxOpenShare('${p.id}')">${icon2('send')}</button><button class="max-reel-action" onclick="toggleSave('${p.id}',this)">${icon2('bookmark')}</button></div></section>`}).join('');
+    const obs=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector('video');if(v)e.isIntersecting?v.play().catch(()=>{}):v.pause()}),{threshold:.65});document.querySelectorAll('.max-reel').forEach(x=>obs.observe(x));
+  };
+
+  /* ---------- Stories: extra actions + privacy/local settings ---------- */
+  window.maxStoryMenu=function(storyId){
+    const el=document.createElement('div');el.className='max-modal';el.innerHTML=`<div class="max-sheet"><div class="max-sheet-grip"></div><button onclick="maxStoryViewers('${storyId}')">${MAX.icons.users}<span>Кто посмотрел</span></button><button onclick="maxStoryPrivacy()">${MAX.icons.users}<span>Настройки приватности истории</span></button><button class="danger" onclick="maxDeleteStory('${storyId}')">${MAX.icons.trash}<span>Удалить историю</span></button><button onclick="maxCloseSheet()">Закрыть</button></div>`;el.onclick=e=>{if(e.target===el)maxCloseSheet()};document.body.appendChild(el);
+  };
+  window.maxDeleteStory=async function(id){if(!confirm('Удалить историю?'))return;const {error}=await db.from('stories').delete().eq('id',id).eq('user_id',currentUser.id);if(error){console.error(error);toast('Ошибка удаления');return}maxCloseSheet();closeStory();toast('История удалена');loadStories()};
+  window.maxStoryPrivacy=function(){const cur=localStorage.getItem('maxnet_story_privacy')||'public';const val=prompt('Приватность: public или followers',cur);if(!val)return;if(!['public','followers'].includes(val))return toast('Используй public или followers');localStorage.setItem('maxnet_story_privacy',val);toast('Настройка сохранена')};
+  window.maxStoryViewers=async function(id){maxCloseSheet();const {data,error}=await db.from('story_views').select('viewer_id,profiles:viewer_id(username,display_name,avatar_url,is_verified)').eq('story_id',id);if(error){toast('Список просмотров недоступен');return}const el=document.createElement('div');el.className='max-modal';el.innerHTML=`<div class="max-sheet"><div class="max-sheet-grip"></div><div style="font-size:18px;font-weight:900">Просмотры</div><div class="max-story-viewers">${(data||[]).map(x=>`<div class="user-row"><img class="user-row-avatar" src="${esc2(getAvatar(x.profiles))}"><div class="user-row-main"><b>@${esc2(x.profiles?.username||'')}</b><small class="muted" style="display:block">${esc2(profileName(x.profiles))}</small></div></div>`).join('')||'<div class="max-empty-state">Пока никто не посмотрел</div>'}</div><button onclick="maxCloseSheet()">Закрыть</button></div>`;el.onclick=e=>{if(e.target===el)maxCloseSheet()};document.body.appendChild(el)};
+
+  /* ---------- Profile tabs ---------- */
+  window.maxShowProfileTab=function(tab,userId){
+    if(tab==='posts'){showProfile(userId);return}
+    const el=document.getElementById('maxProfileTabContent');if(!el)return;
+    if(tab==='saved'){el.innerHTML='<div class="max-empty-state">Сохранённые публикации будут показаны здесь.</div>';return}
+    if(tab==='reels'){el.innerHTML='<div class="max-empty-state">Reels пользователя доступны через раздел Reels.</div>';return}
+    if(tab==='tagged'){el.innerHTML='<div class="max-empty-state">Отмеченные публикации появятся здесь.</div>';return}
+  };
+
+  /* ---------- Avatar upload fix: unique path + cache bust ---------- */
+  window.saveProfile=async function(){
+    let username=$('editUsername')?.value.trim().toLowerCase().replace(/^@/,'').replace(/[^a-z0-9_.]/g,'');const display=$('editDisplay')?.value.trim();const bio=$('editBio')?.value.trim();const avatar=$('avatarFile')?.files?.[0];if(username.length<3){toast('Username слишком короткий');return}
+    let avatarUrl=currentProfile?.avatar_url||null;
+    if(avatar){
+      if(!avatar.type.startsWith('image/')){toast('Выбери изображение');return}
+      const ext=(avatar.name.split('.').pop()||'jpg').toLowerCase();const path=`${currentUser.id}/avatar-${Date.now()}-${crypto.randomUUID()}.${ext}`;
+      const {error:up}=await db.storage.from('avatars').upload(path,avatar,{upsert:false,cacheControl:'3600',contentType:avatar.type});
+      if(up){console.error(up);toast('Ошибка аватарки: проверь Storage bucket avatars и его INSERT policy');return}
+      const {data:u}=db.storage.from('avatars').getPublicUrl(path);avatarUrl=(u?.publicUrl||'')+'?v='+Date.now();
+    }
+    const {error}=await db.from('profiles').update({username,display_name:display||username,bio,avatar_url:avatarUrl,updated_at:new Date().toISOString()}).eq('id',currentUser.id);if(error){console.error(error);toast('Ошибка сохранения профиля');return}await loadProfile();saveAccountSession();toast('Профиль сохранён');await showProfile(currentUser.id);
+  };
+
+  /* ---------- Create page: metadata controls + preview ---------- */
+  const oldShowCreate=window.showCreate;
+  window.showCreate=function(){
+    oldShowCreate();
+    setTimeout(()=>{
+      const cap=$('postCaption');if(!cap)return;
+      const file=$('postFile');if(file){file.setAttribute('accept','image/*,video/*');file.setAttribute('multiple','');}
+      const wrap=cap.parentElement?.parentElement;
+      if(!document.getElementById('maxPostMeta')){
+        const box=document.createElement('div');box.id='maxPostMeta';box.innerHTML=`<div class="max-option-row"><span class="muted">${MAX.icons.users}</span><input id="maxPostTags" class="input" placeholder="Отметить людей: @username"></div><div class="max-option-row"><span class="muted">${MAX.icons.location}</span><input id="maxPostLocation" class="input" placeholder="Место"></div><div class="max-option-row"><span class="muted">#</span><input id="maxPostHashtags" class="input" placeholder="#хэштеги"></div><div class="max-option-row"><input id="maxPostCoauthors" class="input" placeholder="Соавторы: @username"></div><div class="muted small">Фото/видео можно выбрать несколько. Перед публикацией они отображаются в предпросмотре.</div>`;cap.parentNode.insertAdjacentElement('afterend',box)}
+    },30);
+  };
+
+  /* ---------- Story creation extra controls ---------- */
+  const oldShowCreateStory=window.showCreateStory;
+  window.showCreateStory=function(){
+    oldShowCreateStory();setTimeout(()=>{const box=document.querySelector('#storyPreview')||document.querySelector('.story-preview');const root=document.querySelector('.page');if(root&&!document.getElementById('maxStoryMeta')){const d=document.createElement('div');d.id='maxStoryMeta';d.innerHTML=`<div class="max-option-row"><span class="muted">${MAX.icons.link}</span><input id="maxStoryLink" class="input" placeholder="Ссылка (необязательно)"></div><div class="max-option-row"><span class="muted">${MAX.icons.music}</span><input id="maxStoryMusic" class="input" placeholder="Название музыки/аудио"></div><div class="max-option-row"><span class="muted">#</span><input id="maxStorySticker" class="input" placeholder="Текст стикера"></div>`;root.appendChild(d)}},30)
+  };
+
+  /* ---------- Add ••• and story menu to story viewer when it exists ---------- */
+  const oldOpenStory=window.openStory;
+  window.openStory=async function(storyId){await oldOpenStory(storyId);setTimeout(()=>{const view=document.querySelector('.story-view');if(!view||view.querySelector('.max-story-tools'))return;const t=document.createElement('div');t.className='max-story-tools';t.innerHTML=`<button class="max-story-tool" onclick="maxStoryMenu('${storyId}')">${MAX.icons.more}</button>`;view.appendChild(t)},50)};
+
+  /* ---------- Convenience profile tabs injection ---------- */
+  const oldShowProfile=window.showProfile;
+  window.showProfile=async function(uid){await oldShowProfile(uid);setTimeout(()=>{const container=document.querySelector('.profile')||document.querySelector('.profile-head')?.parentElement;if(!container||document.getElementById('maxProfileTabs'))return;const target=document.querySelector('.profile-grid')||document.querySelector('.grid');const tabs=document.createElement('div');tabs.id='maxProfileTabs';tabs.className='max-profile-tabs';tabs.innerHTML=`<button class="active" onclick="maxShowProfileTab('posts','${uid}')">Публикации</button><button onclick="maxShowProfileTab('reels','${uid}')">Reels</button><button onclick="maxShowProfileTab('tagged','${uid}')">Отметки</button><button onclick="maxShowProfileTab('saved','${uid}')">Сохранённые</button>`;(target||container).insertAdjacentElement('beforebegin',tabs)},30)};
+
+  /* ---------- Close sheets on browser back / background tap ---------- */
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')maxCloseSheet()});
+
+  /* ---------- Make story view reply/share buttons richer without changing DB ---------- */
+  const storyObserver=new MutationObserver(()=>{const v=document.querySelector('.story-view');if(!v||v.querySelector('.max-story-tools'))return;const storyId=currentStory?.id;if(!storyId)return;const t=document.createElement('div');t.className='max-story-tools';t.innerHTML=`<button class="max-story-tool" onclick="maxStoryMenu('${storyId}')">${MAX.icons.more}</button>`;v.appendChild(t)});storyObserver.observe(document.body,{childList:true,subtree:true});
+
+  /* ---------- Unread chat + notification indicators ---------- */
+  const CHAT_SEEN_KEY='maxnet_chat_seen_';
+  const NOTIF_SEEN_INIT_KEY='maxnet_notifications_initialized_';
+
+  function chatSeenKey(){return CHAT_SEEN_KEY+(currentUser?.id||'guest')}
+  function getChatSeen(){return Number(localStorage.getItem(chatSeenKey())||0)}
+  function setChatSeen(ts=Date.now()){localStorage.setItem(chatSeenKey(),String(ts));setChatBadge(false)}
+  function setChatBadge(show){const el=document.getElementById('maxChatBadge');if(el)el.classList.toggle('hidden',!show)}
+  function setNotificationBadge(show){const el=document.getElementById('maxNotificationBadge');if(el)el.classList.toggle('hidden',!show)}
+
+  async function updateNotificationBadge(){
+    if(!currentUser){setNotificationBadge(false);return}
+    const {count,error}=await db.from('notifications').select('id',{count:'exact',head:true}).eq('user_id',currentUser.id).eq('is_read',false);
+    if(error){console.error(error);return}
+    setNotificationBadge((count||0)>0);
+  }
+
+  async function updateChatBadge(){
+    if(!currentUser){setChatBadge(false);return}
+    try{
+      const {data:members,error:me}=await db.from('chat_members').select('chat_id').eq('user_id',currentUser.id);
+      if(me||!members?.length){setChatBadge(false);return}
+      const ids=members.map(x=>x.chat_id);
+      let q=db.from('messages').select('id,created_at,sender_id').in('chat_id',ids).neq('sender_id',currentUser.id).order('created_at',{ascending:false}).limit(1);
+      const {data,error}=await q;
+      if(error){console.error(error);return}
+      const latest=data?.[0];
+      if(!latest){setChatBadge(false);return}
+      const seen=getChatSeen();
+      if(!seen){setChatSeen(new Date(latest.created_at).getTime());return}
+      setChatBadge(new Date(latest.created_at).getTime()>seen);
+    }catch(e){console.error(e)}
+  }
+
+  window.maxClearChatUnread=function(){setChatSeen(Date.now())};
+
+  // Patch showChats so opening the chat list clears its red indicator.
+  const _maxShowChats=window.showChats;
+  window.showChats=async function(){
+    await _maxShowChats();
+    setChatSeen(Date.now());
+    await updateNotificationBadge();
+    setTimeout(updateChatBadge,50);
+  };
+
+  // Opening a concrete chat also marks incoming messages as seen.
+  const _maxOpenChat=window.openChat;
+  window.openChat=async function(){
+    await _maxOpenChat();
+    setChatSeen(Date.now());
+    setTimeout(updateChatBadge,50);
+  };
+
+  // Notifications are marked read by the existing function; refresh the dot afterwards.
+  const _maxOpenNotifications=window.openNotifications;
+  window.openNotifications=async function(){
+    await _maxOpenNotifications();
+    setNotificationBadge(false);
+  };
+
+  // Realtime unread updates. This is additive to the existing realtime listeners.
+  const unreadChannel=db.channel('maxnet-unread-indicators');
+  unreadChannel
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications'},payload=>{
+      if(payload.new?.user_id===currentUser?.id){setNotificationBadge(true)}
+    })
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
+      if(payload.new?.sender_id===currentUser?.id)return;
+      if(currentChatId && payload.new?.chat_id===currentChatId){return}
+      setChatBadge(true);
+    })
+    .subscribe();
+
+  // Reels: restore the real post_likes state from Supabase after every render.
+  async function restoreReelLikeState(){
+    if(!currentUser)return;
+    const buttons=[...document.querySelectorAll('.max-reel-action[data-like-post]')];
+    if(!buttons.length)return;
+    const ids=[...new Set(buttons.map(b=>b.dataset.likePost).filter(Boolean))];
+    const {data,error}=await db.from('post_likes').select('post_id').eq('user_id',currentUser.id).in('post_id',ids);
+    if(error){console.error(error);return}
+    const liked=new Set((data||[]).map(x=>x.post_id));
+    buttons.forEach(b=>b.classList.toggle('liked',liked.has(b.dataset.likePost)));
+  }
+
+  // Wrap the enhanced Reels renderer without removing its existing UI.
+  const _maxShowReels=window.showReels;
+  window.showReels=async function(){
+    await _maxShowReels();
+    document.querySelectorAll('.max-reel').forEach(section=>{
+      const btn=section.querySelector('.max-reel-action');
+      if(btn){btn.dataset.likePost=section.querySelector('video')?.closest('.max-reel')?.dataset?.post||''}
+    });
+    await restoreReelLikeState();
+  };
+
+  // The renderer above has no post id on the section, so add it directly by reading the onclick attribute.
+  function normalizeReelLikeButtons(){
+    document.querySelectorAll('.max-reel-action').forEach(btn=>{
+      if(btn.dataset.likePost)return;
+      const m=(btn.getAttribute('onclick')||'').match(/toggleLike\(['"]([^'"]+)['"]/);
+      if(m)btn.dataset.likePost=m[1];
+    });
+  }
+  const _restoreAfterReels=restoreReelLikeState;
+  restoreReelLikeState=async function(){normalizeReelLikeButtons();return _restoreAfterReels()};
+
+  // Initial state after login/home is rendered.
+  setTimeout(()=>{updateNotificationBadge();updateChatBadge()},300);
+
+  /* ---------- Initial enhancement ---------- */
+  window.addEventListener('hashchange',()=>{const id=location.hash.replace('#post-','');if(id&&id!==location.hash){document.getElementById('post-'+id)?.scrollIntoView({behavior:'smooth'})}});
+})();
 </script>
 
 </body>
